@@ -60,7 +60,7 @@ Made with ❤️ by **Delured** — your friendly web developer in training!
 - **React**
 - **HTML5**
 - **JavaScript**
-- **CSS / Flexbox**
+- **CSS**
 
 ---
 
