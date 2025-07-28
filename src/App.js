@@ -1,12 +1,16 @@
 import { useRef, useEffect, useState } from 'react';
 import './App.css';
+import Brush from './img/brush.png';
+import Eraser from './img/eraser.png';
+import Clear from './img/clear.png';
+import Download from './img/download.png';
 
 function Tools({ onToolSelect }) {
   const toolIcons = [
-    { name: 'brush', icon: '/img/brush.png' },
-    { name: 'eraser', icon: '/img/eraser.png' },
-    { name: 'clear', icon: '/img/clear.png' },
-    { name: 'download', icon: '/img/download.png' }
+    { name: 'brush', icon: Brush },
+    { name: 'eraser', icon: Eraser },
+    { name: 'clear', icon: Clear },
+    { name: 'download', icon: Download }
   ];
 
   return (
