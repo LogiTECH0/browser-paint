@@ -4,7 +4,7 @@ A lightweight and interactive painting application built with **React**. This pr
 
 ## 🌈 Live Demo
 
-**Check it out here:** [https://github.com/LogiTECH0/browser-paint](https://github.com/LogiTECH0/browser-paint)\
+**Check it out here:** [https://github.com/LogiTECH0/browser-paint](https://github.com/LogiTECH0/browser-paint)
 
 ---
 
@@ -40,7 +40,7 @@ Made with ❤️ by **Delured** — your friendly web developer in training!
 
 ## 🌈 Онлайн-демо
 
-**Переглянути застосунок:** [https://github.com/LogiTECH0/browser-paint](https://github.com/LogiTECH0/browser-paint)\
+**Переглянути застосунок:** [https://github.com/LogiTECH0/browser-paint](https://github.com/LogiTECH0/browser-paint)
 
 ---
 
