@@ -17,11 +17,12 @@ canvas {
   width: 800px;
   height: 600px;
   background-color: white;
+  cursor: crosshair;
 }
 .canvas {
   display: flex;
   position: relative;
-  margin: 50px 0 0 0;
+  margin: 10px 0 0 0;
 }
 h1 {
   font-size: 48px;
