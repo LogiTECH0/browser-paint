@@ -72,4 +72,5 @@ Made with ❤️ by **Delured** — your friendly web developer in training!
 
 ## 👨‍💼 Автор
 
-Зроблено з ❤️ **Delured'ом** — вашим веселим помічником у світі веброзробки!
+Зроблено з ❤️ Delured'ом — вашим веселим помічником у світі веброзробки!
+
