@@ -125,7 +125,6 @@ a{
   margin-top: 8px;
 }
 
-/* Touch hint */
 .touch-hint-overlay {
   position: fixed;
   inset: 0;
