@@ -1,0 +1,153 @@
+* {
+  font-weight: normal;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  background: linear-gradient(#ccffff, #99ccff) no-repeat;
+  background-size: cover;
+}
+canvas {
+  border: 2px solid black;
+  /* Use responsive sizing; actual drawing buffer size is set in JS for pixel-ratio scaling */
+  max-width: 100%;
+  height: auto;
+  background-color: white;
+  cursor: crosshair;
+}
+.canvas {
+  display: flex;
+  position: relative;
+  margin: 10px 0 0 0;
+}
+h1 {
+  font-size: 48px;
+  font-weight: bold;
+  z-index: 10;
+  text-align: center;
+  margin: 20px auto;
+  width: max-content;
+}
+.paint-layout {
+  display: flex;
+  flex-direction: row;     
+  justify-content: center;  
+  align-items: flex-start; 
+  gap: 40px;             
+}
+.colors {
+  /* responsive color swatches using CSS grid so they wrap and fit nicely */
+  width: 100%;
+  max-width: 300px;
+  margin-top: 150px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 32px);
+  gap: 8px;
+  justify-content: center;
+  padding: 6px;
+}
+a{
+  text-decoration: none;
+  color: black;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 600px) {
+  h1 { font-size: 28px; }
+  .paint-layout { gap: 16px; flex-direction: column; align-items: center; }
+  /* make swatches slightly smaller and allow vertical scrolling if there are many */
+  .colors { width: calc(100% - 24px); margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fill, 28px); gap: 6px; justify-content: center; max-height: 120px; overflow: auto; padding: 6px; }
+  .tools { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+  .tools button { width: 40px !important; height: 40px !important; }
+  .colors button { width: 28px !important; height: 28px !important; margin: 0; }
+  .canvas { margin-top: 8px; }
+}
+
+/* Changelog modal and anchor */
+.changelog-anchor {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 100px;
+  height: 32px;
+  border-radius: 10px;
+  background: white;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.changelog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.changelog-modal {
+  width: 80%;
+  max-width: 720px;
+  background: white;
+  border-radius: 8px;
+  padding: 20px 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.changelog-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.changelog-content {
+  max-height: 60vh;
+  overflow: auto;
+  margin-top: 8px;
+}
+
+/* Touch hint */
+.touch-hint-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.35);
+  z-index: 1200;
+}
+.touch-hint {
+  background: white;
+  padding: 16px 18px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  max-width: 320px;
+  text-align: center;
+}
+.touch-hint button {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background: #fff;
+  cursor: pointer;
+}
