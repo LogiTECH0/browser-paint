@@ -37,10 +37,10 @@ h2 {
 /* ----------------- Layout ----------------- */
 .paint-layout {
   display: flex;
-  flex-direction: row; /* рядок: canvas + colors */
-  justify-content: center; /* центруємо все горизонтально */
-  align-items: center; /* центр по вертикалі */
-  gap: 24px; /* відстань між canvas і colors */
+  flex-direction: row;
+  justify-content: center; 
+  align-items: center;
+  gap: 24px; 
   width: 100%;
   max-width: 1920px;
   padding: 0 16px 32px 16px;

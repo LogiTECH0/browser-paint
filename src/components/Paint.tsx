@@ -184,11 +184,11 @@ export function Paint({ color, tool }: PaintProps) {
     ) {
       const centerX = (coords.x1 + coords.x2) / 2;
       const centerY = (coords.y1 + coords.y2) / 2;
-      const radius =
-        Math.hypot(coords.x2 - coords.x1, coords.y2 - coords.y1) / 2;
+      const radiusX = Math.abs(coords.x1 - coords.x2) / 2;
+      const radiusY = Math.abs(coords.y1 - coords.y2) / 2;
 
       ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI*2 );
       ctx.stroke();
 
       setFirst(0, 0);
