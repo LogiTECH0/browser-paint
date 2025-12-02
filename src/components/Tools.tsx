@@ -6,6 +6,7 @@ import Fill from '../img/fill.png';
 import Text from '../img/text.png';
 import Circle from '../img/circle.png';
 import Square from '../img/square.png';
+import Line from '../img/line.png';
 import type { Tool } from '../types/Types';
 
 
@@ -13,6 +14,7 @@ export function Tools({ onToolSelect, selectedTool }: Tool) { // панель і
   const toolIcons = [
     { name: 'brush', icon: Brush },
     { name: 'eraser', icon: Eraser },
+    { name: 'line', icon: Line },
     { name: 'fill', icon: Fill },
     { name: 'circle', icon: Circle },
     { name: 'square', icon: Square },

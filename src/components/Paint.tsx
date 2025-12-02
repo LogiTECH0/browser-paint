@@ -156,7 +156,7 @@ export function Paint({ color, tool }: PaintProps) {
     if (!canvas) return;
 
     const handleClickWrapper = (e: MouseEvent) => {
-      if (tool === "circle" || tool === "square") {
+      if (tool === "circle" || tool === "square" || tool === "line") {
         handleFigure(e as unknown as React.MouseEvent<HTMLCanvasElement>);
       }
     };
@@ -189,6 +189,22 @@ export function Paint({ color, tool }: PaintProps) {
 
       ctx.beginPath();
       ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI*2 );
+      ctx.stroke();
+
+      setFirst(0, 0);
+      setSecond(0, 0);
+    }
+    // лінія
+    if (
+      tool === "line" &&
+      coords.x1 !== 0 &&
+      coords.y1 !== 0 &&
+      coords.x2 !== 0 &&
+      coords.y2 !== 0
+    ) {
+      ctx.beginPath();
+      ctx.moveTo(coords.x1, coords.y1)
+      ctx.lineTo(coords.x2, coords.y2);
       ctx.stroke();
 
       setFirst(0, 0);
@@ -277,7 +293,7 @@ export function Paint({ color, tool }: PaintProps) {
 
     const startDrawing = (e: MouseEvent | TouchEvent) => {
       e.preventDefault?.();
-      if (tool === "circle" || tool === "square" || tool === "text") return;
+      if (tool === "circle" || tool === "square" || tool === "text" || tool === 'line') return;
       if (tool === "fill") {
         const { x, y } = getMousePos(e);
         handleFill(Math.floor(x), Math.floor(y));
