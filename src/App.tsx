@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
 import { Colors } from "./components/Colors";
 import { Tools } from "./components/Tools";
@@ -9,31 +9,6 @@ export default function App() {
   const [selectedColor, setSelectedColor] = useState("black");
   const [tool, setTool] = useState("brush");
   const [showChangelog, setShowChangelog] = useState(false);
-  const [showTouchHint, setShowTouchHint] = useState<boolean>(false);
-
-  useEffect(() => {
-    try {
-      const dismissed: string | null =
-        localStorage.getItem("touchHintDismissed");
-      const isTouch =
-        typeof window !== "undefined" &&
-        ("ontouchstart" in window || navigator.maxTouchPoints > 0);
-      if (isTouch && !dismissed) {
-        queueMicrotask(() => setShowTouchHint(true));
-      }
-    } catch {
-      console.log("error");
-    }
-  }, []);
-
-  const dismissTouchHint = () => {
-    try {
-      localStorage.setItem("touchHintDismissed", "1");
-    } catch {
-      console.log("error");
-    }
-    setShowTouchHint(false);
-  };
 
   const handleToolSelect = (name: string) => {
     setTool(name);
@@ -72,17 +47,6 @@ export default function App() {
         <a href="https://t.me/ukrainian_dev">Telegram</a>
         <a href="https://buymeacoffee.com/BrimTECH">Donate</a>
       </div>
-      {showTouchHint && (
-        <div className="touch-hint-overlay" onClick={dismissTouchHint}>
-          <div className="touch-hint" onClick={(e) => e.stopPropagation()}>
-            <p style={{ margin: 0 }}>
-              <strong>Tip:</strong> Touch the canvas to draw. Use the toolbar to
-              switch tools.
-            </p>
-            <button onClick={dismissTouchHint}>Got it</button>
-          </div>
-        </div>
-      )}
       {showChangelog && (
         <div className="changelog-overlay" onClick={closeChangelog}>
           <div
@@ -100,41 +64,24 @@ export default function App() {
             </button>
             <br></br>
             <br></br>
-            <h3>🆕 v1.2.0 — Shape and Text</h3>
+            <h3>🆕 v1.2.3 — Mobile Adaptation</h3>
             <div className="changelog-content">
               <h2>🚀 New Features</h2>
               <ul>
                 <li>
-                  🔵 <strong>Circle & Square Tools:</strong> Draw perfect shapes
-                  with two clicks!
-                </li>
-                <li>
-                  ✏️ <strong>Text Tool:</strong> Add custom text anywhere using
-                  a convenient modal input.
-                </li>
-                <li>
-                  🎨 <strong>Color Support:</strong> Shapes and text now follow
-                  your selected palette color.
-                </li>
-                <li>
-                  🖥 <strong>Click-to-Draw Modal:</strong> Text appears only
-                  after choosing the location and entering content.
+                  🖥 <strong>Mobile adaptation:</strong> Now you can freely use Chromify from any point of the world in your smartphone!
                 </li>
               </ul>
               <h2>🛠 Fixes & Improvements</h2>
               <ul>
-                <li>🐞 Fixed bug where shapes could overlap incorrectly.</li>
+                <li>🐞 Fixed bug where fill could work incorrectly.</li>
                 <li>
-                  🧹 Cleaned up shape drawing logic for smoother experience.
-                </li>
-                <li>
-                  ⚡ Improved tool switching to prevent accidental brush drawing
-                  when using shapes or text.
+                  ⚡ Improved design which plays a big role in recognision of Chromify
                 </li>
               </ul>
               <p>
-                <strong>Author:</strong> Delured · <strong>Date:</strong> Nov
-                29, 2025
+                <strong>Author:</strong> Delured · <strong>Date:</strong> Dec
+                06, 2025
               </p>
             </div>
 
@@ -142,42 +89,24 @@ export default function App() {
             <br></br>
             <br></br>
 
-            <h3>🆕 v1.2.0 — Фігури та текст</h3>
+            <h3>🆕 v1.2.3 — Мобільна адаптація</h3>
             <div className="changelog-content">
               <h2>🚀 Нові можливості</h2>
               <ul>
                 <li>
-                  🔵 <strong>Інструменти коло та квадрат:</strong> Малюйте
-                  ідеальні фігури за два кліки!
-                </li>
-                <li>
-                  ✏️ <strong>Інструмент текст:</strong> Додавайте власний текст
-                  будь-де через зручне модальне вікно.
-                </li>
-                <li>
-                  🎨 <strong>Підтримка кольорів:</strong> Фігури та текст
-                  використовують обраний колір палітри.
-                </li>
-                <li>
-                  🖥 <strong>Модальне введення тексту:</strong> Текст з’являється
-                  лише після вибору координат і введення контенту.
+                  🖥 <strong>Мобільна адаптація</strong> Тепер можна вільно користуватись Chromify з будь якої точки світу, прямо у телефоні!
                 </li>
               </ul>
               <h2>🛠 Виправлення та покращення</h2>
               <ul>
-                <li>🐞 Виправлено баг, коли фігури накладалися некоректно.</li>
+                <li>🐞 Виправлено баг, коли заповнення було некоректним.</li>
                 <li>
-                  🧹 Оптимізовано логіку малювання фігур для плавнішого досвіду.
-                </li>
-                <li>
-                  ⚡ Поліпшене переключення інструментів, щоб уникнути
-                  випадкового малювання пензлем під час роботи з фігурами або
-                  текстом.
+                  ⚡ Поліпшений дизайн, що грає велику роль у впізнаванні Chromify.
                 </li>
               </ul>
               <p>
                 <strong>Автор:</strong> Delured · <strong>Дата:</strong>{" "}
-                29.11.2025
+                06.12.2025
               </p>
             </div>
           </div>

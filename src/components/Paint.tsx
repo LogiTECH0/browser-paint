@@ -20,48 +20,69 @@ export function Paint({ color, tool }: PaintProps) {
 
   const [clickCount, setClickCount] = useState(0);
 
-  const [textCoords, setTextCoords] = useState<{ x: number; y: number } | null>(null);
+  const [textCoords, setTextCoords] = useState<{ x: number; y: number } | null>(
+    null
+  );
   const [textValue, setTextValue] = useState("");
   const [showTextInput, setShowTextInput] = useState(false);
   const [fontFamily, setFontFamily] = useState("Arial");
 
-  // ---- Universal Get Position ---- //
+  // ---------------------- Universal Position ---------------------- //
   const getPos = (e: MouseEvent | TouchEvent) => {
     const rect = canvasRef.current!.getBoundingClientRect();
-    const clientX = "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
-    const clientY = "touches" in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
+    const clientX =
+      "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+    const clientY =
+      "touches" in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
     return { x: clientX - rect.left, y: clientY - rect.top };
   };
 
-  // ---- Responsive Canvas ---- //
+  // ---------------------- Responsive Canvas ---------------------- //
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
 
     const setupCanvas = () => {
       const dpr = window.devicePixelRatio || 1;
-      const maxDisplayWidth = Math.min(800, Math.max(320, window.innerWidth - 32));
+      const maxDisplayWidth = Math.min(
+        800,
+        Math.max(320, window.innerWidth - 32)
+      );
       const displayWidth = maxDisplayWidth;
-      const displayHeight = Math.round(displayWidth * 3 / 4);
+      const displayHeight = Math.round((displayWidth * 3) / 4);
 
+      // save
       const temp = document.createElement("canvas");
       temp.width = canvas.width;
       temp.height = canvas.height;
       const tctx = temp.getContext("2d")!;
       tctx.drawImage(canvas, 0, 0);
 
+      // scale
       canvas.style.width = displayWidth + "px";
       canvas.style.height = displayHeight + "px";
-
       canvas.width = Math.round(displayWidth * dpr);
       canvas.height = Math.round(displayHeight * dpr);
-
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+      // white background
       ctx.fillStyle = "white";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (temp.width) ctx.drawImage(temp, 0, 0, temp.width, temp.height, 0, 0, canvas.width, canvas.height);
+      // restore
+      if (temp.width) {
+        ctx.drawImage(
+          temp,
+          0,
+          0,
+          temp.width,
+          temp.height,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+      }
 
       ctxRef.current = ctx;
     };
@@ -71,7 +92,7 @@ export function Paint({ color, tool }: PaintProps) {
     return () => window.removeEventListener("resize", setupCanvas);
   }, []);
 
-  // ---- Clear & Download ---- //
+  // ---------------------- Clear & Download ---------------------- //
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = ctxRef.current!;
@@ -87,9 +108,11 @@ export function Paint({ color, tool }: PaintProps) {
       tempCanvas.width = canvas.width;
       tempCanvas.height = canvas.height;
       const tempCtx = tempCanvas.getContext("2d")!;
+
       tempCtx.fillStyle = "white";
       tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
       tempCtx.drawImage(canvas, 0, 0);
+
       const link = document.createElement("a");
       link.download = "drawing.png";
       link.href = tempCanvas.toDataURL("image/png");
@@ -97,41 +120,52 @@ export function Paint({ color, tool }: PaintProps) {
     }
   }, [tool]);
 
-  // ---- Fill Bucket ---- //
-  const handleFill = useCallback((x: number, y: number) => {
-    if (tool !== "fill") return;
-    const canvas = canvasRef.current!;
-    const ctx = ctxRef.current!;
-    const fillColor: RGBA = colorStringToRGBA(color);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  // ---------------------- Fill Bucket ---------------------- //
+  const handleFill = useCallback(
+    (x: number, y: number) => {
+      if (tool !== "fill") return;
+      const canvas = canvasRef.current!;
+      const ctx = ctxRef.current!;
+      const fillColor: RGBA = colorStringToRGBA(color);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-    const pos = (y * imageData.width + x) * 4;
-    const data = imageData.data;
-    const targetColor: RGBA = [data[pos], data[pos + 1], data[pos + 2], data[pos + 3]];
+      const pos = (y * imageData.width + x) * 4;
+      const data = imageData.data;
+      const targetColor: RGBA = [
+        data[pos],
+        data[pos + 1],
+        data[pos + 2],
+        data[pos + 3],
+      ];
 
-    if (!colorsMatch(targetColor, fillColor)) {
-      floodFill({ imageData, x, y, targetColor, fillColor });
-      ctx.putImageData(imageData, 0, 0);
-    }
-  }, [color, tool]);
+      if (!colorsMatch(targetColor, fillColor)) {
+        floodFill({ imageData, x, y, targetColor, fillColor });
+        ctx.putImageData(imageData, 0, 0);
+      }
+    },
+    [color, tool]
+  );
 
-  // ---- Shapes ---- //
-  const handleFigure = useCallback((e: MouseEvent | TouchEvent ) => {
-    if (!canvasRef.current) return;
-    if (!["circle", "square", "line"].includes(tool)) return;
+  // ---------------------- Shapes ---------------------- //
+  const handleFigure = useCallback(
+    (e: MouseEvent | TouchEvent) => {
+      if (!["circle", "square", "line"].includes(tool)) return;
 
-    e.preventDefault?.();
-    const { x, y } = getPos(e);
+      e.preventDefault?.();
+      const { x, y } = getPos(e);
 
-    if (clickCount === 0) {
-      setFirst(x, y);
-      setClickCount(1);
-    } else {
-      setSecond(x, y);
-      setClickCount(0);
-    }
-  }, [clickCount, tool, setFirst, setSecond]);
+      if (clickCount === 0) {
+        setFirst(x, y);
+        setClickCount(1);
+      } else {
+        setSecond(x, y);
+        setClickCount(0);
+      }
+    },
+    [clickCount, tool, setFirst, setSecond]
+  );
 
+  // Draw shapes when coords change
   useEffect(() => {
     if (!coords || !canvasRef.current) return;
     const ctx = canvasRef.current.getContext("2d")!;
@@ -148,12 +182,14 @@ export function Paint({ color, tool }: PaintProps) {
         ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
         ctx.stroke();
       }
+
       if (tool === "line") {
         ctx.beginPath();
         ctx.moveTo(coords.x1, coords.y1);
         ctx.lineTo(coords.x2, coords.y2);
         ctx.stroke();
       }
+
       if (tool === "square") {
         const left = Math.min(coords.x1, coords.x2);
         const top = Math.min(coords.y1, coords.y2);
@@ -167,14 +203,17 @@ export function Paint({ color, tool }: PaintProps) {
     }
   }, [coords, tool, color, setFirst, setSecond]);
 
-  // ---- Text Tool ---- //
-  const handleTextClick = useCallback((e: MouseEvent | TouchEvent) => {
-    if (tool !== "text") return;
-    e.preventDefault?.();
-    const { x, y } = getPos(e);
-    setTextCoords({ x, y });
-    setShowTextInput(true);
-  }, [tool]);
+  // ---------------------- Text Tool ---------------------- //
+  const handleTextClick = useCallback(
+    (e: MouseEvent | TouchEvent) => {
+      if (tool !== "text") return;
+      e.preventDefault?.();
+      const { x, y } = getPos(e);
+      setTextCoords({ x, y });
+      setShowTextInput(true);
+    },
+    [tool]
+  );
 
   const handleTextSubmit = () => {
     if (!canvasRef.current || !textCoords) return;
@@ -191,16 +230,16 @@ export function Paint({ color, tool }: PaintProps) {
     setShowTextInput(false);
   };
 
-  // ---- Drawing & Eraser ---- //
+  // ---------------------- Drawing + Eraser ---------------------- //
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = ctxRef.current!;
 
-    const start = (e: MouseEvent | TouchEvent ) => {
+    const start = (e: MouseEvent | TouchEvent) => {
       e.preventDefault?.();
-      if (["circle", "square", "line", "text"].includes(tool)) {
-        return;
-      }
+
+      if (["circle", "square", "line", "text"].includes(tool)) return;
+
       if (tool === "fill") {
         const { x, y } = getPos(e);
         handleFill(Math.floor(x), Math.floor(y));
@@ -209,39 +248,41 @@ export function Paint({ color, tool }: PaintProps) {
 
       setIsDrawing(true);
       setPrevPos(getPos(e));
-      ctx.globalCompositeOperation = tool === "eraser" ? "destination-out" : "source-over";
+
+      ctx.globalCompositeOperation =
+        tool === "eraser" ? "destination-out" : "source-over";
       ctx.lineWidth = tool === "eraser" ? 12 : 4;
       ctx.strokeStyle = tool === "eraser" ? "white" : color;
     };
 
-    const draw = (e: MouseEvent | TouchEvent ) => {
+    const draw = (e: MouseEvent | TouchEvent) => {
       if (!isDrawing) return;
       e.preventDefault?.();
+
       const current = getPos(e);
       ctx.beginPath();
       ctx.moveTo(prevPos.x, prevPos.y);
       ctx.lineTo(current.x, current.y);
       ctx.stroke();
+
       setPrevPos(current);
     };
 
     const stop = () => setIsDrawing(false);
 
-    // Mouse
     canvas.addEventListener("mousedown", start);
     canvas.addEventListener("mousemove", draw);
     canvas.addEventListener("mouseup", stop);
     canvas.addEventListener("mouseleave", stop);
 
-    // Touch
     canvas.addEventListener("touchstart", start, { passive: false });
     canvas.addEventListener("touchmove", draw, { passive: false });
     canvas.addEventListener("touchend", stop);
     canvas.addEventListener("touchcancel", stop);
 
-    // Shapes & Text - add touch & click
     canvas.addEventListener("click", handleFigure);
     canvas.addEventListener("touchstart", handleFigure, { passive: false });
+
     canvas.addEventListener("click", handleTextClick);
     canvas.addEventListener("touchstart", handleTextClick, { passive: false });
 
@@ -262,14 +303,30 @@ export function Paint({ color, tool }: PaintProps) {
       canvas.removeEventListener("click", handleTextClick);
       canvas.removeEventListener("touchstart", handleTextClick);
     };
-  }, [tool, isDrawing, prevPos, color, handleFill, handleFigure, handleTextClick]);
+  }, [
+    tool,
+    isDrawing,
+    prevPos,
+    color,
+    handleFill,
+    handleFigure,
+    handleTextClick,
+  ]);
 
   return (
     <div className="canvas">
       {showTextInput && (
-        <div className="text-modal-overlay" onClick={() => setShowTextInput(false)}>
+        <div
+          className="text-modal-overlay"
+          onClick={() => setShowTextInput(false)}
+        >
           <div className="text-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="text-modal-close" onClick={() => setShowTextInput(false)}>×</button>
+            <button
+              className="text-modal-close"
+              onClick={() => setShowTextInput(false)}
+            >
+              ×
+            </button>
             <label>Enter your text:</label>
             <input
               autoFocus
@@ -278,18 +335,25 @@ export function Paint({ color, tool }: PaintProps) {
               onKeyDown={(e) => e.key === "Enter" && handleTextSubmit()}
               className="text-modal-input"
             />
-            <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} className="text-modal-option">
-              <option value="Arial">Arial</option>
-              <option value="Comic Neue">Comic Neue</option>
-              <option value="Inter">Inter</option>
-              <option value="Rubik">Rubik</option>
-              <option value="Roboto Condensed">Roboto Condensed</option>
-            </select>
-            <button onClick={handleTextSubmit} className="text-modal-confirm">Add Text</button>
-          </div>
+            <select
+              value={fontFamily}
+              onChange={(e) => setFontFamily(e.target.value)}
+              className="text-modal-option"
+            >
+              {" "}
+              <option value="Arial">Arial</option>{" "}
+              <option value="Comic Neue">Comic Neue</option>{" "}
+              <option value="Inter">Inter</option>{" "}
+              <option value="Rubik">Rubik</option>{" "}
+              <option value="Roboto Condensed">Roboto Condensed</option>{" "}
+            </select>{" "}
+            <button onClick={handleTextSubmit} className="text-modal-confirm">
+              Add Text
+            </button>{" "}
+          </div>{" "}
         </div>
-      )}
-      <canvas ref={canvasRef}></canvas>
+      )}{" "}
+      <canvas ref={canvasRef}></canvas>{" "}
     </div>
   );
 }

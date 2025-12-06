@@ -273,65 +273,6 @@ canvas {
   }
 }
 
-/* ----------------- Під середні планшети / 768px ----------------- */
-@media (max-width: 768px) {
-  body {
-    overflow: hidden;
-  }
-
-  .paint-layout {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 0 12px;
-    height: 90vh;
-    overflow: hidden;
-  }
-
-  canvas {
-    max-width: 95%;
-    max-height: 50vh;
-    margin: 0 auto;
-  }
-
-  /* Інструменти: одна лінія, менші кнопки */
-  .tools {
-    width: 100%;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    justify-content: center;
-  }
-
-  .tools button {
-    width: 40px;
-    height: 40px;
-    flex: 0 0 auto;
-  }
-
-  /* Кольори */
-  .colors {
-    width: 100%;
-    max-width: 400px;
-    max-height: 100px;
-    gap: 2px;
-    overflow-y: auto;
-  }
-
-  .colors button {
-    width: 24px;
-    height: 24px;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-  }
-
-  h2 {
-    font-size: 1rem;
-  }
-}
-
 /* ----------------- Під мобільні / 425px ----------------- */
 @media (max-width: 425px) {
   .paint-layout {
@@ -341,6 +282,7 @@ canvas {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 8px;
   }
 
   canvas {
