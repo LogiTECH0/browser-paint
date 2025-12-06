@@ -27,7 +27,6 @@ export function Paint({ color, tool }: PaintProps) {
   const [showTextInput, setShowTextInput] = useState(false);
   const [fontFamily, setFontFamily] = useState("Arial");
 
-  // ---------------------- Universal Position ---------------------- //
   const getPos = (e: MouseEvent | TouchEvent) => {
     const rect = canvasRef.current!.getBoundingClientRect();
     const clientX =
@@ -37,7 +36,6 @@ export function Paint({ color, tool }: PaintProps) {
     return { x: clientX - rect.left, y: clientY - rect.top };
   };
 
-  // ---------------------- Responsive Canvas ---------------------- //
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
@@ -51,25 +49,21 @@ export function Paint({ color, tool }: PaintProps) {
       const displayWidth = maxDisplayWidth;
       const displayHeight = Math.round((displayWidth * 3) / 4);
 
-      // save
       const temp = document.createElement("canvas");
       temp.width = canvas.width;
       temp.height = canvas.height;
       const tctx = temp.getContext("2d")!;
       tctx.drawImage(canvas, 0, 0);
 
-      // scale
       canvas.style.width = displayWidth + "px";
       canvas.style.height = displayHeight + "px";
       canvas.width = Math.round(displayWidth * dpr);
       canvas.height = Math.round(displayHeight * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // white background
       ctx.fillStyle = "white";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // restore
       if (temp.width) {
         ctx.drawImage(
           temp,
@@ -92,7 +86,6 @@ export function Paint({ color, tool }: PaintProps) {
     return () => window.removeEventListener("resize", setupCanvas);
   }, []);
 
-  // ---------------------- Clear & Download ---------------------- //
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = ctxRef.current!;
@@ -120,7 +113,6 @@ export function Paint({ color, tool }: PaintProps) {
     }
   }, [tool]);
 
-  // ---------------------- Fill Bucket ---------------------- //
   const handleFill = useCallback(
     (x: number, y: number) => {
       if (tool !== "fill") return;
@@ -146,7 +138,6 @@ export function Paint({ color, tool }: PaintProps) {
     [color, tool]
   );
 
-  // ---------------------- Shapes ---------------------- //
   const handleFigure = useCallback(
     (e: MouseEvent | TouchEvent) => {
       if (!["circle", "square", "line"].includes(tool)) return;
@@ -203,7 +194,6 @@ export function Paint({ color, tool }: PaintProps) {
     }
   }, [coords, tool, color, setFirst, setSecond]);
 
-  // ---------------------- Text Tool ---------------------- //
   const handleTextClick = useCallback(
     (e: MouseEvent | TouchEvent) => {
       if (tool !== "text") return;
@@ -230,7 +220,6 @@ export function Paint({ color, tool }: PaintProps) {
     setShowTextInput(false);
   };
 
-  // ---------------------- Drawing + Eraser ---------------------- //
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = ctxRef.current!;
