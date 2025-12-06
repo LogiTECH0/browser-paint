@@ -38,9 +38,9 @@ h2 {
 .paint-layout {
   display: flex;
   flex-direction: row;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
-  gap: 24px; 
+  gap: 24px;
   width: 100%;
   max-width: 1920px;
   padding: 0 16px 32px 16px;
@@ -245,16 +245,136 @@ canvas {
   font-family: Arial, sans-serif;
 }
 .rubik {
-  font-family: 'Rubik', Arial, sans-serif;
+  font-family: "Rubik", Arial, sans-serif;
 }
 .roboto-condensed {
-  font-family: 'Roboto Condensed', Arial, sans-serif;
+  font-family: "Roboto Condensed", Arial, sans-serif;
 }
 .inter {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
 }
 .comic-neue {
-  font-family: 'Comic Neue', Arial, sans-serif;
+  font-family: "Comic Neue", Arial, sans-serif;
 }
 
-/* ----------------- Adaptation ----------------- */
+/* ----------------- Під великі планшети / 1024px ----------------- */
+@media (max-width: 1024px) {
+  .paint-layout {
+    gap: 16px;
+    padding: 0 12px;
+  }
+
+  canvas {
+    max-width: 90%;
+  }
+
+  .colors {
+    max-height: 220px;
+  }
+}
+
+/* ----------------- Під середні планшети / 768px ----------------- */
+@media (max-width: 768px) {
+  body {
+    overflow: hidden;
+  }
+
+  .paint-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px;
+    height: 90vh;
+    overflow: hidden;
+  }
+
+  canvas {
+    max-width: 95%;
+    max-height: 50vh;
+    margin: 0 auto;
+  }
+
+  /* Інструменти: одна лінія, менші кнопки */
+  .tools {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    justify-content: center;
+  }
+
+  .tools button {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+  }
+
+  /* Кольори */
+  .colors {
+    width: 100%;
+    max-width: 400px;
+    max-height: 100px;
+    gap: 2px;
+    overflow-y: auto;
+  }
+
+  .colors button {
+    width: 24px;
+    height: 24px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+}
+
+/* ----------------- Під мобільні / 425px ----------------- */
+@media (max-width: 425px) {
+  .paint-layout {
+    padding: 0 8px;
+    gap: 8px;
+    height: 70vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  canvas {
+    max-width: 100%;
+    max-height: 230px;
+    margin: 0 auto;
+  }
+
+  .tools {
+    padding-bottom: 8px;
+    justify-content: center;
+  }
+
+  .tools button {
+    width: 36px;
+    height: 36px;
+    font-size: 0.65rem;
+  }
+
+  .colors {
+    max-height: 200px;
+    overflow-y: auto;
+    max-width: 400px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 0.9rem;
+  }
+
+  .creds h2 {
+    font-size: 24px;
+  }
+}
