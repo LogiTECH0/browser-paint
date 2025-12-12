@@ -66,6 +66,8 @@ canvas {
   gap: 2px;
   justify-content: start;
   margin-bottom: 16px;
+  padding-top: 8px;
+  padding-bottom: 2px;
 }
 
 .tools button {
@@ -111,7 +113,9 @@ canvas {
 .creds {
   text-align: center;
 }
-
+.creds h2{
+  margin-bottom: 4px;
+}
 .creds a {
   text-decoration: none;
   color: #111;
