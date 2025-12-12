@@ -16,7 +16,7 @@ export function Paint({ color, tool }: PaintProps) {
   const coords = useCoordsStore((s) => s.coords);
 
   const [isDrawing, setIsDrawing] = useState(false);
-  const [prevPos, setPrevPos] = useState({ x: 0, y: 0 });
+  const prevPosRef = useRef<{ x: number; y: number } | null>(null);
 
   const [clickCount, setClickCount] = useState(0);
 
@@ -28,24 +28,30 @@ export function Paint({ color, tool }: PaintProps) {
   const [fontFamily, setFontFamily] = useState("Arial");
 
   const getPos = (e: MouseEvent | TouchEvent) => {
-    const rect = canvasRef.current!.getBoundingClientRect();
-    const clientX =
-      "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
-    const clientY =
-      "touches" in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
-    return { x: clientX - rect.left, y: clientY - rect.top };
+    const canvas = canvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
+
+    const clientX = "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
+
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    console.log((clientX - rect.left) * scaleX, (clientY - rect.top) * scaleY);
+
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
   };
+
 
   useEffect(() => {
     const canvas = canvasRef.current!;
-    const ctx = canvas.getContext("2d")!;
 
     const setupCanvas = () => {
       const dpr = window.devicePixelRatio || 1;
-      const maxDisplayWidth = Math.min(
-        800,
-        Math.max(320, window.innerWidth - 32)
-      );
+      const maxDisplayWidth = Math.min(800, Math.max(320, window.innerWidth - 32));
       const displayWidth = maxDisplayWidth;
       const displayHeight = Math.round((displayWidth * 3) / 4);
 
@@ -59,7 +65,10 @@ export function Paint({ color, tool }: PaintProps) {
       canvas.style.height = displayHeight + "px";
       canvas.width = Math.round(displayWidth * dpr);
       canvas.height = Math.round(displayHeight * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const ctx = canvas.getContext("2d")!;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
 
       ctx.fillStyle = "white";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -80,6 +89,7 @@ export function Paint({ color, tool }: PaintProps) {
 
       ctxRef.current = ctx;
     };
+
 
     setupCanvas();
     window.addEventListener("resize", setupCanvas);
@@ -236,11 +246,14 @@ export function Paint({ color, tool }: PaintProps) {
       }
 
       setIsDrawing(true);
-      setPrevPos(getPos(e));
+      prevPosRef.current = getPos(e);
+
+      const dpr = window.devicePixelRatio || 1;
 
       ctx.globalCompositeOperation =
         tool === "eraser" ? "destination-out" : "source-over";
-      ctx.lineWidth = tool === "eraser" ? 12 : 4;
+      const baseBrush = tool === "eraser" ? 12 : 4;
+      ctx.lineWidth = baseBrush * dpr;
       ctx.strokeStyle = tool === "eraser" ? "white" : color;
     };
 
@@ -249,15 +262,22 @@ export function Paint({ color, tool }: PaintProps) {
       e.preventDefault?.();
 
       const current = getPos(e);
-      ctx.beginPath();
-      ctx.moveTo(prevPos.x, prevPos.y);
-      ctx.lineTo(current.x, current.y);
-      ctx.stroke();
+      if (prevPosRef.current) {
+        ctx.beginPath();
+        ctx.moveTo(prevPosRef.current.x, prevPosRef.current.y);
+        ctx.lineTo(current.x, current.y);
+        ctx.stroke();
+      }
 
-      setPrevPos(current);
+      prevPosRef.current = current;
     };
 
-    const stop = () => setIsDrawing(false);
+
+    const stop = () => {
+      setIsDrawing(false);
+      prevPosRef.current = null;
+    };
+
 
     canvas.addEventListener("mousedown", start);
     canvas.addEventListener("mousemove", draw);
@@ -295,7 +315,7 @@ export function Paint({ color, tool }: PaintProps) {
   }, [
     tool,
     isDrawing,
-    prevPos,
+    prevPosRef,
     color,
     handleFill,
     handleFigure,
