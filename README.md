@@ -1,7 +1,7 @@
-# 🌟 Chromify — v1.2.4
+# 🌟 Chromify — v1.2.5
 
-A lightweight, interactive, and now fully mobile-adaptive painting app built with **React**.  
-This update brings **a new Line tool**, tons of **bug fixes**, and a **complete mobile drawing upgrade** — smoother, sharper, and perfectly aligned under your finger.
+The lightweight, interactive, and mobile-adaptive painting app built with **React** gets even better!  
+This release brings **Undo & Redo**, improved **shape drawing logic**, and **performance optimizations** across the board.
 
 ## 🌈 Live Demo
 
@@ -11,50 +11,36 @@ This update brings **a new Line tool**, tons of **bug fixes**, and a **complete 
 
 ## 🎓 Features
 
-- 🖌️ **Brush Tool** – Freely draw with smooth strokes.
-  
-- 🧽 **Eraser Tool** – Cleanly erase any part of your drawing.
-  
-- 🌈 **Extended Color Palette** – Dozens of vivid colors.
-  
-- 🎨 **Fill Tool** – Flood-fill areas like in MS Paint.
-  
-- 🔵 **Circle & Square Tools** – Draw perfect shapes with two clicks.
-  
-- ✏️ **Text Tool** – Add text anywhere using a modal input.
-  
-- 📏 **Line Tool (NEW)** – Draw straight, precise lines.
-  
-- 📱 **Full Mobile Adaptation (NEW)**  
+- 🖌️ **Brush Tool** – Draw freely with smooth strokes.  
+- 🧽 **Eraser Tool** – Cleanly erase any part of your drawing.  
+- 🌈 **Extended Color Palette** – More vivid colors for more creativity.  
+- 🎨 **Fill Tool** – Flood-fill areas like in MS Paint.  
+- 🔵 **Circle & Square Tools** – Draw perfect shapes with two clicks.  
+- ✏️ **Text Tool** – Add text anywhere using a modal input.  
+- 📏 **Line Tool** – Draw straight, precise lines.  
+- ↩️ **Undo Tool (NEW)** – Revert the last action instantly.  
+- ↪️ **Redo Tool (NEW)** – Restore previously undone actions.  
+- ❌ **Clear Canvas** – Reset everything instantly.  
+- 📷 **Download as PNG** – Export your art with a white background.  
+- 📱 **Full Mobile Adaptation**  
   - Accurate touch coordinates  
   - Proper scaling for high-DPI screens  
-  - Brush size fixed across devices  
-  - Zero offset between finger and stroke  
-  
-- ⚙️ **Tool Selection UI** – Clean and intuitive.
-  
-- ❌ **Clear Canvas** – Reset everything instantly.
-  
-- 📷 **Download as PNG** – Export your art with a white background.
-  
+  - Fixed brush size across devices  
+  - No offset between finger and stroke  
 - 🐞 **Fixes & Optimizations**  
-  - Touch offset bugs fixed  
-  - Brush scaling fixed  
-  - Smoother rendering  
-  - Improved shape handling  
-  - Faster fill algorithm  
+  - Shape drawing now only requires two clicks  
+  - Undo/Redo stack behavior improved  
+  - Smoother rendering and faster fills  
+  - Bug fixes on mobile devices  
 
 ---
 
 ## 🚀 Technologies Used
 
-- **React**
-  
-- **TypeScript**
-  
-- **HTML5 Canvas API**
-  
-- **CSS**
+- **React**  
+- **TypeScript**  
+- **HTML5 Canvas API**  
+- **CSS**  
 
 ---
 
@@ -64,10 +50,10 @@ Made with ❤️ by **Delured** — your friendly web developer in training!
 
 ---
 
-# 🌟 Chromify — v1.2.4
+# 🌟 Chromify — v1.2.5
 
-Легкий, інтерактивний та тепер повністю **мобільно-адаптивний** додаток для малювання, створений на **React**.  
-У цьому оновленні з’явився **новий інструмент Лінія**, безліч фіксів та **ідеальна робота на телефонах** — без зміщень, без масштабних приколів і з правильним розміром пензля.
+Легкий, інтерактивний та мобільно-адаптивний додаток для малювання на **React** стає ще кращим!  
+У цьому оновленні з’явилися **Undo та Redo**, покращена **логіка малювання фігур** та **оптимізація продуктивності**.
 
 ## 🌈 Демонстрація
 
@@ -77,50 +63,36 @@ Made with ❤️ by **Delured** — your friendly web developer in training!
 
 ## 🎓 Функції
 
-- 🖌️ **Пензель** – плавне вільне малювання.
-  
-- 🧽 **Ластик** – точне та м’яке стирання.
-  
-- 🌈 **Розширена палітра** – ще більше яскравих кольорів.
-  
-- 🎨 **Заливка** – заповнюйте області як у MS Paint.
-  
-- 🔵 **Коло та Квадрат** – малюйте ідеальні фігури за два кліки.
-  
-- ✏️ **Інструмент Текст** – додавайте підписи через модальне вікно.
-  
-- 📏 **Інструмент Лінія (НОВЕ)** – створюйте чіткі, рівні лінії.
-  
-- 📱 **Повна мобільна адаптація (НОВЕ)**  
+- 🖌️ **Пензель** – плавне вільне малювання.  
+- 🧽 **Ластик** – точне та м’яке стирання.  
+- 🌈 **Розширена палітра** – ще більше яскравих кольорів для творчості.  
+- 🎨 **Заливка** – заповнюйте області як у MS Paint.  
+- 🔵 **Коло та Квадрат** – малюйте ідеальні фігури за два кліки.  
+- ✏️ **Інструмент Текст** – додавайте підписи через модальне вікно.  
+- 📏 **Інструмент Лінія** – створюйте чіткі, рівні лінії.  
+- ↩️ **Відміна (Undo) (НОВЕ)** – миттєво повертає останню дію.  
+- ↪️ **Повтор (Redo) (НОВЕ)** – відновлює попередньо відмінену дію.  
+- ❌ **Очистити полотно** – скиньте все одним кліком.  
+- 📷 **Завантаження в PNG** – експортуйте малюнок з білим фоном.  
+- 📱 **Повна мобільна адаптація**  
   - Коректні координати торкань  
   - Масштабування під високі DPI  
   - Єдиний розмір пензля на різних пристроях  
   - Точка малювання точно під пальцем  
-
-- ⚙️ **Зручний вибір інструментів** – чистий та інтуїтивний UI.
-  
-- ❌ **Очистити полотно** – скиньте все одним кліком.
-  
-- 📷 **Завантаження в PNG** – експортуйте малюнок з білим фоном.
-  
 - 🐞 **Виправлення та оптимізація**  
-  - Виправлено зміщення на телефонах  
-  - Виправлено масштаб пензля  
-  - Оптимізовано роботу фігур  
-  - Прискорено заливку  
-  - Малювання стало плавнішим  
+  - Малювання фігур тепер завжди вимагає лише два кліки  
+  - Покращено поведінку Undo/Redo стеку  
+  - Плавніше малювання та швидша заливка  
+  - Виправлення багів на мобільних пристроях  
 
 ---
 
 ## 🚀 Технології
 
-- **React**
-
-- **TypeScript**
-  
-- **HTML5 Canvas API**
-  
-- **CSS**
+- **React**  
+- **TypeScript**  
+- **HTML5 Canvas API**  
+- **CSS**  
 
 ---
 

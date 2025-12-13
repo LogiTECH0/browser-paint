@@ -64,24 +64,21 @@ export default function App() {
             </button>
             <br></br>
             <br></br>
-            <h3>🆕 v1.2.3 — Mobile Adaptation</h3>
+            <h3>🆕 v1.2.5 — Undo/Redo</h3>
             <div className="changelog-content">
               <h2>🚀 New Features</h2>
               <ul>
                 <li>
-                  🖥 <strong>Mobile adaptation:</strong> Now you can freely use Chromify from any point of the world in your smartphone!
+                  🖥 <strong>Undo/Redo:</strong> Now you can freely revert your changes in case you did something wrong!
                 </li>
               </ul>
               <h2>🛠 Fixes & Improvements</h2>
               <ul>
-                <li>🐞 Fixed bug where fill could work incorrectly.</li>
-                <li>
-                  ⚡ Improved design which plays a big role in recognision of Chromify
-                </li>
+                <li>🐞 Fixed bug where mobile brush could paint incorrectly.</li>
               </ul>
               <p>
                 <strong>Author:</strong> Delured · <strong>Date:</strong> Dec
-                06, 2025
+                13, 2025
               </p>
             </div>
 
@@ -89,24 +86,21 @@ export default function App() {
             <br></br>
             <br></br>
 
-            <h3>🆕 v1.2.3 — Мобільна адаптація</h3>
+            <h3>🆕 v1.2.3 — Відміна/Повтор</h3>
             <div className="changelog-content">
               <h2>🚀 Нові можливості</h2>
               <ul>
                 <li>
-                  🖥 <strong>Мобільна адаптація</strong> Тепер можна вільно користуватись Chromify з будь якої точки світу, прямо у телефоні!
+                  🖥 <strong>Відміна/Повтор</strong> Тепер можна вільно відміняти і повторяти зміни у випадку якщо ви зробили щось некоректно!
                 </li>
               </ul>
               <h2>🛠 Виправлення та покращення</h2>
               <ul>
-                <li>🐞 Виправлено баг, коли заповнення було некоректним.</li>
-                <li>
-                  ⚡ Поліпшений дизайн, що грає велику роль у впізнаванні Chromify.
-                </li>
+                <li>🐞 Виправлено баг, коли на мобільних телефонах неправильно працював пензлик.</li>
               </ul>
               <p>
                 <strong>Автор:</strong> Delured · <strong>Дата:</strong>{" "}
-                06.12.2025
+                13.12.2025
               </p>
             </div>
           </div>
