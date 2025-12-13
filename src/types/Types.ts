@@ -15,6 +15,7 @@ export interface Flood {
 export interface PaintProps {
   color: string;
   tool: string;
+  setTool: (tool: string) => void;
 };
 
 export interface Color {

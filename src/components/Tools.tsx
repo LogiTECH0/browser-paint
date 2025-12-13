@@ -7,6 +7,8 @@ import Text from '../img/text.png';
 import Circle from '../img/circle.png';
 import Square from '../img/square.png';
 import Line from '../img/line.png';
+import Undo from '../img/undo.png';
+import Redo from '../img/redo.png';
 import type { Tool } from '../types/Types';
 
 
@@ -19,6 +21,8 @@ export function Tools({ onToolSelect, selectedTool }: Tool) { // панель і
     { name: 'circle', icon: Circle },
     { name: 'square', icon: Square },
     { name: 'text', icon: Text },
+    { name: 'undo', icon: Undo },
+    { name: 'redo', icon: Redo },
     { name: 'clear', icon: Clear },
     { name: 'download', icon: Download }
   ];

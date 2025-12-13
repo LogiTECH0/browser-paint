@@ -37,7 +37,7 @@ export default function App() {
       <div className="paint-layout">
         <div>
           <Tools onToolSelect={handleToolSelect} selectedTool={tool} />
-          <Paint color={selectedColor} tool={tool} />
+          <Paint color={selectedColor} tool={tool} setTool={setTool}/>
         </div>
         <Colors onColorSelect={setSelectedColor} />
       </div>

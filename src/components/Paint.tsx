@@ -7,7 +7,8 @@ import { useCoordsStore } from "../utils/ReadXY";
 
 type RGBA = [number, number, number, number];
 
-export function Paint({ color, tool }: PaintProps) {
+export function Paint({ color, tool, setTool }: PaintProps) {
+  const MAX_HISTORY = 30;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -15,7 +16,7 @@ export function Paint({ color, tool }: PaintProps) {
   const setSecond = useCoordsStore((s) => s.setSecond);
   const coords = useCoordsStore((s) => s.coords);
 
-  const [isDrawing, setIsDrawing] = useState(false);
+  const isDrawingRef = useRef(false);
   const prevPosRef = useRef<{ x: number; y: number } | null>(null);
 
   const [clickCount, setClickCount] = useState(0);
@@ -27,101 +28,149 @@ export function Paint({ color, tool }: PaintProps) {
   const [showTextInput, setShowTextInput] = useState(false);
   const [fontFamily, setFontFamily] = useState("Arial");
 
+  const undoStack = useRef<ImageData[]>([]);
+  const redoStack = useRef<ImageData[]>([]);
+
   const getPos = (e: MouseEvent | TouchEvent) => {
     const canvas = canvasRef.current!;
     const rect = canvas.getBoundingClientRect();
 
-    const clientX = "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
-    const clientY = "touches" in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
+    const clientX =
+      "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+    const clientY =
+      "touches" in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
 
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
 
-    console.log((clientX - rect.left) * scaleX, (clientY - rect.top) * scaleY);
-
     return {
       x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY
+      y: (clientY - rect.top) * scaleY,
     };
   };
 
+  const saveState = () => {
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext("2d")!;
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+    const last = undoStack.current[undoStack.current.length - 1];
+    if (!last || !imageDataEquals(last, imageData)) {
+      if (undoStack.current.length >= MAX_HISTORY) undoStack.current.shift();
+      undoStack.current.push(imageData);
+      redoStack.current = [];
+    }
+  };
+
+  const imageDataEquals = (a: ImageData, b: ImageData) => {
+    if (a.width !== b.width || a.height !== b.height) return false;
+    for (let i = 0; i < a.data.length; i++) {
+      if (a.data[i] !== b.data[i]) return false;
+    }
+    return true;
+  };
+
+  const undo = () => {
+    if (undoStack.current.length <= 1) return;
+    const last = undoStack.current.pop()!;
+    redoStack.current.push(last);
+    const prev = undoStack.current[undoStack.current.length - 1];
+    ctxRef.current!.putImageData(prev, 0, 0);
+  };
+
+  const redo = () => {
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext("2d")!;
+    if (redoStack.current.length === 0) return;
+    const next = redoStack.current.pop()!;
+    ctx.putImageData(next, 0, 0);
+    undoStack.current.push(next);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current!;
+    const ctx = canvas.getContext("2d")!;
+    const dpr = window.devicePixelRatio || 1;
 
-    const setupCanvas = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const maxDisplayWidth = Math.min(800, Math.max(320, window.innerWidth - 32));
-      const displayWidth = maxDisplayWidth;
-      const displayHeight = Math.round((displayWidth * 3) / 4);
+    const maxDisplayWidth = Math.min(
+      800,
+      Math.max(320, window.innerWidth - 32)
+    );
+    const displayWidth = maxDisplayWidth;
+    const displayHeight = Math.round((displayWidth * 3) / 4);
 
+    canvas.style.width = displayWidth + "px";
+    canvas.style.height = displayHeight + "px";
+    canvas.width = Math.round(displayWidth * dpr);
+    canvas.height = Math.round(displayHeight * dpr);
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctxRef.current = ctx;
+
+    saveState();
+
+    const handleResize = () => {
       const temp = document.createElement("canvas");
       temp.width = canvas.width;
       temp.height = canvas.height;
-      const tctx = temp.getContext("2d")!;
-      tctx.drawImage(canvas, 0, 0);
+      temp.getContext("2d")!.drawImage(canvas, 0, 0);
 
-      canvas.style.width = displayWidth + "px";
-      canvas.style.height = displayHeight + "px";
       canvas.width = Math.round(displayWidth * dpr);
       canvas.height = Math.round(displayHeight * dpr);
-
-      const ctx = canvas.getContext("2d")!;
-
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-
       ctx.fillStyle = "white";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      if (temp.width) {
-        ctx.drawImage(
-          temp,
-          0,
-          0,
-          temp.width,
-          temp.height,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-      }
-
-      ctxRef.current = ctx;
+      ctx.drawImage(
+        temp,
+        0,
+        0,
+        temp.width,
+        temp.height,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
     };
 
-
-    setupCanvas();
-    window.addEventListener("resize", setupCanvas);
-    return () => window.removeEventListener("resize", setupCanvas);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current!;
-    const ctx = ctxRef.current!;
+    const ctx = canvas.getContext("2d")!;
 
+    if (tool === "undo") {
+      undo();
+      setTool("brush");
+    }
+    if (tool === "redo") {
+      redo();
+      setTool("brush");
+    }
     if (tool === "clear") {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.fillStyle = "white";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+      saveState();
+      setTool("brush");
     }
-
     if (tool === "download") {
-      const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = canvas.width;
-      tempCanvas.height = canvas.height;
-      const tempCtx = tempCanvas.getContext("2d")!;
-
-      tempCtx.fillStyle = "white";
-      tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-      tempCtx.drawImage(canvas, 0, 0);
-
-      const link = document.createElement("a");
-      link.download = "drawing.png";
-      link.href = tempCanvas.toDataURL("image/png");
-      link.click();
+      const url = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "chromify.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTool("brush");
     }
-  }, [tool]);
+  }, [tool, setTool]);
 
   const handleFill = useCallback(
     (x: number, y: number) => {
@@ -143,6 +192,7 @@ export function Paint({ color, tool }: PaintProps) {
       if (!colorsMatch(targetColor, fillColor)) {
         floodFill({ imageData, x, y, targetColor, fillColor });
         ctx.putImageData(imageData, 0, 0);
+        saveState();
       }
     },
     [color, tool]
@@ -151,7 +201,6 @@ export function Paint({ color, tool }: PaintProps) {
   const handleFigure = useCallback(
     (e: MouseEvent | TouchEvent) => {
       if (!["circle", "square", "line"].includes(tool)) return;
-
       e.preventDefault?.();
       const { x, y } = getPos(e);
 
@@ -166,7 +215,6 @@ export function Paint({ color, tool }: PaintProps) {
     [clickCount, tool, setFirst, setSecond]
   );
 
-  // Draw shapes when coords change
   useEffect(() => {
     if (!coords || !canvasRef.current) return;
     const ctx = canvasRef.current.getContext("2d")!;
@@ -174,6 +222,8 @@ export function Paint({ color, tool }: PaintProps) {
     ctx.lineWidth = 4;
 
     if (coords.x1 && coords.y1 && coords.x2 && coords.y2) {
+      saveState();
+
       if (tool === "circle") {
         const cx = (coords.x1 + coords.x2) / 2;
         const cy = (coords.y1 + coords.y2) / 2;
@@ -223,6 +273,7 @@ export function Paint({ color, tool }: PaintProps) {
 
     document.fonts.ready.then(() => {
       ctx.fillText(textValue, textCoords.x, textCoords.y);
+      saveState();
     });
 
     setTextValue("");
@@ -237,47 +288,56 @@ export function Paint({ color, tool }: PaintProps) {
     const start = (e: MouseEvent | TouchEvent) => {
       e.preventDefault?.();
 
-      if (["circle", "square", "line", "text"].includes(tool)) return;
-
+      if (
+        [
+          "circle",
+          "square",
+          "line",
+          "text",
+          "undo",
+          "redo",
+          "clear",
+          "download",
+        ].includes(tool)
+      )
+        return;
       if (tool === "fill") {
         const { x, y } = getPos(e);
         handleFill(Math.floor(x), Math.floor(y));
         return;
       }
 
-      setIsDrawing(true);
+      saveState();
+
+      isDrawingRef.current = true;
       prevPosRef.current = getPos(e);
 
       const dpr = window.devicePixelRatio || 1;
-
       ctx.globalCompositeOperation =
         tool === "eraser" ? "destination-out" : "source-over";
-      const baseBrush = tool === "eraser" ? 12 : 4;
-      ctx.lineWidth = baseBrush * dpr;
+      ctx.lineWidth = (tool === "eraser" ? 12 : 4) * dpr;
       ctx.strokeStyle = tool === "eraser" ? "white" : color;
     };
 
     const draw = (e: MouseEvent | TouchEvent) => {
-      if (!isDrawing) return;
+      if (!isDrawingRef.current) return;
       e.preventDefault?.();
-
       const current = getPos(e);
-      if (prevPosRef.current) {
-        ctx.beginPath();
-        ctx.moveTo(prevPosRef.current.x, prevPosRef.current.y);
-        ctx.lineTo(current.x, current.y);
-        ctx.stroke();
-      }
+
+      ctx.beginPath();
+      ctx.moveTo(prevPosRef.current!.x, prevPosRef.current!.y);
+      ctx.lineTo(current.x, current.y);
+      ctx.stroke();
 
       prevPosRef.current = current;
     };
 
-
     const stop = () => {
-      setIsDrawing(false);
+      if (!isDrawingRef.current) return;
+      isDrawingRef.current = false;
       prevPosRef.current = null;
+      saveState();
     };
-
 
     canvas.addEventListener("mousedown", start);
     canvas.addEventListener("mousemove", draw);
@@ -312,15 +372,7 @@ export function Paint({ color, tool }: PaintProps) {
       canvas.removeEventListener("click", handleTextClick);
       canvas.removeEventListener("touchstart", handleTextClick);
     };
-  }, [
-    tool,
-    isDrawing,
-    prevPosRef,
-    color,
-    handleFill,
-    handleFigure,
-    handleTextClick,
-  ]);
+  }, [tool, color, handleFill, handleFigure, handleTextClick]);
 
   return (
     <div className="canvas">
@@ -349,20 +401,19 @@ export function Paint({ color, tool }: PaintProps) {
               onChange={(e) => setFontFamily(e.target.value)}
               className="text-modal-option"
             >
-              {" "}
-              <option value="Arial">Arial</option>{" "}
-              <option value="Comic Neue">Comic Neue</option>{" "}
-              <option value="Inter">Inter</option>{" "}
-              <option value="Rubik">Rubik</option>{" "}
-              <option value="Roboto Condensed">Roboto Condensed</option>{" "}
-            </select>{" "}
+              <option value="Arial">Arial</option>
+              <option value="Comic Neue">Comic Neue</option>
+              <option value="Inter">Inter</option>
+              <option value="Rubik">Rubik</option>
+              <option value="Roboto Condensed">Roboto Condensed</option>
+            </select>
             <button onClick={handleTextSubmit} className="text-modal-confirm">
               Add Text
-            </button>{" "}
-          </div>{" "}
+            </button>
+          </div>
         </div>
-      )}{" "}
-      <canvas ref={canvasRef}></canvas>{" "}
+      )}
+      <canvas ref={canvasRef}></canvas>
     </div>
   );
 }
