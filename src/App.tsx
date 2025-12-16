@@ -86,7 +86,7 @@ export default function App() {
             <br></br>
             <br></br>
 
-            <h3>🆕 v1.2.3 — Відміна/Повтор</h3>
+            <h3>🆕 v1.2.5 — Відміна/Повтор</h3>
             <div className="changelog-content">
               <h2>🚀 Нові можливості</h2>
               <ul>
